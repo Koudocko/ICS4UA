@@ -3,19 +3,6 @@ package shopping;
 import java.util.ArrayList;
 import java.util.Random;
 
-class Item{
-	public String name;
-	public int stock, salePercent;
-	public double price;
-
-	public Item(String name, int stock, double price, int salePercent){
-		this.name = name;
-		this.stock = stock;
-		this.price = price;
-		this.salePercent = salePercent;
-	}
-}
-
 public class Store{
 	private ArrayList<Item>	inventory;
 	public String name, address, phoneNumber, postalCode;
@@ -45,6 +32,6 @@ public class Store{
 		Random rand = new Random();
 		int salePercent = rand.nextBoolean() ? rand.nextInt(100) + 1 : 0;
 
-		inventory.add(new Item(name, rand.nextInt(50) + 1, price, salePercent));
+		inventory.add(new Item(name, this.name, rand.nextInt(50) + 1, price, salePercent));
 	}
 }
