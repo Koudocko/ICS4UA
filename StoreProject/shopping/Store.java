@@ -12,6 +12,7 @@ public class Store{
 		this.address = address;
 		this.phoneNumber = phoneNumber;
 		this.postalCode = postalCode;
+		this.inventory = new ArrayList<Item>();
 	}
 
 	public void displayInventory(){

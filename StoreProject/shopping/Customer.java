@@ -5,14 +5,21 @@ import java.util.Random;
 import shopping.Item;
 
 public class Customer{
-	ArrayList<Item> itemsBought;
+	public ArrayList<Item> itemsBought;
 	public String name;
-	public double cashAmount, couponAmount; 
+	public double balance;
+	public ArrayList<Integer> coupons;
 
-	// public Customer(String name){
-	// 	Random rand = new Random();
+	public Customer(String name){
+		Random rand = new Random();
 
-	// 	this.name = name;
-	// 	this.cashAmount = rand.nextDouble();
-	// }
+		this.name = name;
+		this.balance = rand.nextInt(1000) + 1;
+
+		int numCoupons = rand.nextInt(6);
+		this.coupons = new ArrayList<Integer>();
+		for (int i = 0; i < numCoupons; ++i){
+			this.coupons.add(rand.nextInt(50) + 1);
+		}
+	}
 }
