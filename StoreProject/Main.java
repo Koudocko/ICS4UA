@@ -1,4 +1,3 @@
-import java.lang.Thread;
 import java.util.ArrayList;
 import java.util.Scanner;
 import shopping.*;
@@ -12,7 +11,7 @@ public class Main{
 			System.out.println();
 			System.out.println("---==={ Available Shops in DistroMall }===---");
 
-			System.out.println("0 - Quit shopping");
+			System.out.println("0 - Checkout");
 			System.out.println("--------------------");
 			for (int i = 0; i < stores.size(); ++i){
 				System.out.println((i + 1) + " - " + stores.get(i).name);
@@ -40,11 +39,11 @@ public class Main{
 			"M9C 1B8", 
 			"(416) 620-0050"
 		);
-		games.addItem("Controller", 54.50);
-		games.addItem("Console", 150.00);
+		games.addItem("Controller", 49.99);
+		games.addItem("Console", 469.99);
 		games.addItem("PC", 760.00);
-		games.addItem("Game cartridge", 90.00);
-		games.addItem("Extension cable", 15.00);
+		games.addItem("Game cartridge", 60.00);
+		games.addItem("Extension cable", 10.17);
 		stores.add(games);
 
 		Store food = new Store(
@@ -53,31 +52,52 @@ public class Main{
 			"M9C 1B8", 
 			"(416) 621-0203"
 		);
-		food.addItem("Steak", 54.50);
-		food.addItem("Burger", 150.00);
-		food.addItem("Salad", 760.00);
-		food.addItem("Soup", 90.00);
-		food.addItem("Cake", 15.00);
+		food.addItem("Steak", 26.43);
+		food.addItem("Burger", 9.19);
+		food.addItem("Salad", 5.99);
+		food.addItem("Soup", 7.27);
+		food.addItem("Cake", 13.99);
 		stores.add(food);
 
-		stores.add(new Store(
+		Store fishing = new Store(
 			"Fedora Fishing", 
 			"25 The West Mall #1660, Etobicoke, ON", 
 			"M9C 1B8", 
 			"(416) 620-7750"
-		));
-		stores.add(new Store(
+		);
+		fishing.addItem("Rod", 37.59);
+		fishing.addItem("Line", 5.00);
+		fishing.addItem("Bait", 0.99);
+		fishing.addItem("Lure", 2.87);
+		fishing.addItem("Bobber", 1.20);
+		stores.add(fishing);
+
+		Store utilities = new Store(
 			"Ubuntu Utilities", 
 			"25 The West Mall #1900, Etobicoke, ON", 
 			"M9C 1B8", 
 			"(416) 620-9435"
-		));
-		stores.add(new Store(
-			"Arch Art", 
+		);
+		utilities.addItem("Wood plank", 24.14);
+		utilities.addItem("Paint", 33.97);
+		utilities.addItem("Lightbulb", 3.30);
+		utilities.addItem("Drills", 99.00);
+		utilities.addItem("Hammer", 19.98);
+		stores.add(utilities);
+		
+		Store appliances = new Store(
+			"Arch Appliances", 
 			"25 The West Mall #3038, Etobicoke, ON", 
 			"M9C 1B8", 
 			"(416) 622-3769"
-		));
+		);
+		appliances.addItem("Toaster", 59.49);
+		appliances.addItem("Fridge", 289.99);
+		appliances.addItem("Oven", 899.98);
+		appliances.addItem("Microwave", 109.98);
+		appliances.addItem("Dishwasher", 599.99);
+		stores.add(appliances);
+		
 	}
 
 	public static void main(String args[]){

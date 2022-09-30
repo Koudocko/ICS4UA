@@ -16,7 +16,7 @@ public class Customer{
 		Random rand = new Random();
 
 		this.name = name;
-		this.balance = rand.nextInt(1000) + 1;
+		this.balance = rand.nextInt(3000) + 1;
 		this.cart = new ArrayList<Item>();
 
 		int numCoupons = rand.nextInt(6);
@@ -26,17 +26,68 @@ public class Customer{
 		}
 	}
 
-	public void buyAt(Store store){
+	public void storeMenu(){
+		
+	}
+
+	public void sellItem(Store store){
+		Scanner stdinHandle = new Scanner(System.in);
+
+		System.out.println();
+		System.out.println("---==={ " + store.name + "'s Shopping Cart }===---");
+		printDetails();
+
+		System.out.print("Which product would you like to buy: ");
+		String input = stdinHandle.nextLine();
+
+		int idx = -1;
+		for (int i = 0; i < store.inventory.size(); ++i){
+			if (input.toLowerCase().contains(this.cart.get(i).name.toLowerCase())){
+				idx = i;
+				break;
+			}
+		}
+
+		if (idx >= 0){
+			Item cartItem = this.cart.get(idx);
+
+			System.out.print("How many would you like to sell: ");
+
+			for (String word : stdinHandle.nextLine().split(" ")){
+				try{
+					int deduction = Integer.parseInt(word);
+					int itemAmount = cartItem.stock > deduction ? deduction : cartItem.stock;
+
+					cartItem.stock -= itemAmount;
+					System.out.println("\nRemoved from cart:");
+					System.out.println("=> " + cartItem.name + ":");
+					System.out.println("\tStock: " + cartItem.stock);
+					System.out.println("\tPrice Per: " + NumberFormat.getCurrencyInstance().format(cartItem.price));
+					System.out.println("\tPrice Total: " + NumberFormat.getCurrencyInstance().format(cartItem.price * cartItem.stock));
+
+					if (this.cart.get(idx).stock <= 0)
+						this.cart.remove(idx);
+					break;
+				}
+				catch (NumberFormatException e){}
+			}
+		}
+		else{
+			System.out.println("The item you are looking for does not exist!");
+		}
+	}
+
+	public void buyItem(Store store){
 		Scanner stdinHandle = new Scanner(System.in);
 
 		System.out.println();
 		System.out.println("---==={ Availble Items in " + store.name + " }===---");
 
 		for (int i = 0; i < store.inventory.size(); ++i){
-			Item currentStore = store.inventory.get(i);
-			System.out.println("Name: " + currentStore.name);
-			System.out.println("Stock: " + currentStore.stock);
-			System.out.println("Price: " + NumberFormat.getCurrencyInstance().format(currentStore.price));
+			Item currentItem = store.inventory.get(i);
+			System.out.println("Name: " + currentItem.name);
+			System.out.println("Stock: " + currentItem.stock);
+			System.out.println("Price: " + NumberFormat.getCurrencyInstance().format(currentItem.price));
 			System.out.println("--------------------");
 		}
 		System.out.println();
@@ -69,7 +120,8 @@ public class Customer{
 							System.out.println("\nAdded to cart:");
 							System.out.println("=> " + cartItem.name + ":");
 							System.out.println("\tStock: " + cartItem.stock);
-							System.out.println("\tPrice: " + NumberFormat.getCurrencyInstance().format(cartItem.price * cartItem.stock));
+							System.out.println("\tPrice Per: " + NumberFormat.getCurrencyInstance().format(cartItem.price));
+							System.out.println("\tPrice Total: " + NumberFormat.getCurrencyInstance().format(cartItem.price * cartItem.stock));
 						}
 						else{
 							System.out.println("Not enough stock for purchase!");
@@ -110,10 +162,10 @@ public class Customer{
 				System.out.println("=> " + item.name + ":");
 				System.out.println("\tStock: " + item.stock);
 				System.out.println("\tPrice Per: " + NumberFormat.getCurrencyInstance().format(item.price));
-				System.out.println("\tPrice Tot: " + NumberFormat.getCurrencyInstance().format((item.price * item.stock)));
+				System.out.println("\tPrice Total: " + NumberFormat.getCurrencyInstance().format((item.price * item.stock)));
 				cartTotal += item.price * item.stock;
 
-				try{ Thread.sleep(1500); }
+				try{ Thread.sleep(500); }
 				catch (InterruptedException e){
 					Thread.currentThread().interrupt();
 				}
@@ -132,7 +184,11 @@ public class Customer{
 		}
 	}
 
+	void printMacro(String msg, int count){
+		for (int i = 0; i < count; ++i)
+			System.out.print(msg);
+	}
+
 	public void printReceipt(){
-			
 	}
 }
