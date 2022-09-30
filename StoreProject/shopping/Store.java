@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Store{
-	private ArrayList<Item>	inventory;
+	public ArrayList<Item>	inventory;
 	public String name, address, phoneNumber, postalCode;
 
 	public Store(String name, String address, String phoneNumber, String postalCode){
@@ -22,7 +22,7 @@ public class Store{
 			System.out.println("|");
 			System.out.print("| Name: " + inventory.get(i).name);
 			System.out.print("| Stock: " + inventory.get(i).stock);
-			System.out.print("| Price: $" + inventory.get(i).price);
+			System.out.print("| Price: " + inventory.get(i).price);
 			System.out.println("|");
 		}
 

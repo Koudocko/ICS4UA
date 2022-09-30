@@ -12,5 +12,13 @@ public class Item{
 		this.price = price;
 		this.salePercent = salePercent;
 	}
+
+	public Item(Item clone){
+		this.name = clone.name;
+		this.retailer = clone.retailer;
+		this.stock = clone.stock;
+		this.price = clone.price;
+		this.salePercent = clone.salePercent;
+	}
 }
 
