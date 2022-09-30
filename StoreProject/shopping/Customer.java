@@ -7,7 +7,7 @@ import java.util.Random;
 import shopping.Item;
 
 public class Customer{
-	public ArrayList<Item> itemsBought;
+	public ArrayList<Item> cart;
 	public String name;
 	public double balance;
 	public ArrayList<Integer> coupons;
@@ -17,19 +17,12 @@ public class Customer{
 
 		this.name = name;
 		this.balance = rand.nextInt(1000) + 1;
-		this.itemsBought = new ArrayList<Item>();
+		this.cart = new ArrayList<Item>();
 
 		int numCoupons = rand.nextInt(6);
 		this.coupons = new ArrayList<Integer>();
 		for (int i = 0; i < numCoupons; ++i){
 			this.coupons.add(rand.nextInt(50) + 1);
-		}
-
-		System.out.println("---==={ Welcome to DistroMall, " + this.name + " }===---\n");
-		System.out.println("Balance: " + NumberFormat.getCurrencyInstance().format(this.balance));
-		System.out.println("Coupons available: " + this.coupons.size());
-		for (int i = 0; i < this.coupons.size(); ++i){
-			System.out.println("\tCoupon " + (i + 1) + " - " + this.coupons.get(i) + "% off");
 		}
 	}
 
@@ -43,7 +36,7 @@ public class Customer{
 			Item currentStore = store.inventory.get(i);
 			System.out.println("Name: " + currentStore.name);
 			System.out.println("Stock: " + currentStore.stock);
-			System.out.println("Price: " + currentStore.price);
+			System.out.println("Price: " + NumberFormat.getCurrencyInstance().format(currentStore.price));
 			System.out.println("--------------------");
 		}
 		System.out.println();
@@ -63,24 +56,74 @@ public class Customer{
 		if (idx >= 0){
 			Item cartItem = new Item(store.inventory.get(idx));
 
-			System.out.print("How many would you like to buy: ");
+			if (cartItem.stock > 0){
+				System.out.print("How many would you like to buy: ");
 
-			for (String word : stdinHandle.nextLine().split(" ")){
-				try{
-					cartItem.stock = Integer.parseInt(word);
-					store.inventory.get(idx).stock -= cartItem.stock;
-					break;
+				for (String word : stdinHandle.nextLine().split(" ")){
+					try{
+						cartItem.stock = Integer.parseInt(word);
+						if (store.inventory.get(idx).stock - cartItem.stock >= 0){
+							store.inventory.get(idx).stock -= cartItem.stock;
+							cart.add(cartItem);
+
+							System.out.println("\nAdded to cart:");
+							System.out.println("=> " + cartItem.name + ":");
+							System.out.println("\tStock: " + cartItem.stock);
+							System.out.println("\tPrice: " + NumberFormat.getCurrencyInstance().format(cartItem.price * cartItem.stock));
+						}
+						else{
+							System.out.println("Not enough stock for purchase!");
+						}
+						break;
+					}
+					catch (NumberFormatException e){}
 				}
-				catch (NumberFormatException e){}
 			}
-			
-			System.out.println("Added to cart:");
-			System.out.println("=> Name: " + cartItem.name);
-			System.out.println("=> Stock: " + cartItem.stock);
-			System.out.println("=> Price: " + (cartItem.price * cartItem.stock));
+			else{
+				System.out.println("Product is out of stock!");
+			}
 		}
 		else{
 			System.out.println("The item you are looking for does not exist!");
+		}
+		System.out.println();
+
+		try{ Thread.sleep(1500); }
+		catch (InterruptedException e){
+			Thread.currentThread().interrupt();
+		}
+	}
+
+	public void printDetails(){
+		System.out.println("Balance: " + NumberFormat.getCurrencyInstance().format(this.balance));
+
+		System.out.println("Coupons available: " + this.coupons.size());
+		for (int i = 0; i < this.coupons.size(); ++i){
+			System.out.println("\tCoupon " + (i + 1) + " - " + this.coupons.get(i) + "% off");
+		}
+		
+		if (cart.size() > 0){
+			double cartTotal = 0.0;
+
+			System.out.println("Cart:");
+			for (Item item : this.cart){
+				System.out.println("=> " + item.name + ":");
+				System.out.println("\tStock: " + item.stock);
+				System.out.println("\tPrice Per: " + NumberFormat.getCurrencyInstance().format(item.price));
+				System.out.println("\tPrice Tot: " + NumberFormat.getCurrencyInstance().format((item.price * item.stock)));
+				cartTotal += item.price * item.stock;
+
+				try{ Thread.sleep(1500); }
+				catch (InterruptedException e){
+					Thread.currentThread().interrupt();
+				}
+			}
+			
+			System.out.println("Cart Total: " + NumberFormat.getCurrencyInstance().format(cartTotal));
+			System.out.println("Predicated Balance: " + NumberFormat.getCurrencyInstance().format((this.balance - cartTotal)));
+		}
+		else{
+			System.out.println("Cart: empty");
 		}
 
 		try{ Thread.sleep(1500); }
@@ -90,6 +133,6 @@ public class Customer{
 	}
 
 	public void printReceipt(){
-
+			
 	}
 }

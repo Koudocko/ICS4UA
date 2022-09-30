@@ -43,7 +43,7 @@ public class Main{
 		games.addItem("Controller", 54.50);
 		games.addItem("Console", 150.00);
 		games.addItem("PC", 760.00);
-		games.addItem("Game catridge", 90.00);
+		games.addItem("Game cartridge", 90.00);
 		games.addItem("Extension cable", 15.00);
 		stores.add(games);
 
@@ -54,7 +54,7 @@ public class Main{
 			"(416) 621-0203"
 		);
 		food.addItem("Steak", 54.50);
-		food.addItem("Buger", 150.00);
+		food.addItem("Burger", 150.00);
 		food.addItem("Salad", 760.00);
 		food.addItem("Soup", 90.00);
 		food.addItem("Cake", 15.00);
@@ -110,14 +110,12 @@ public class Main{
 		System.out.println();
 
 		Customer customer = new Customer(customerName);
+		System.out.println("---==={ Welcome to DistroMall, " + customer.name + " }===---");
 		
-		try{ Thread.sleep(1500); }
-		catch (InterruptedException e){
-			Thread.currentThread().interrupt();
-		}
-	
 		while (true){
+			customer.printDetails();
 			int option = selectStore(stores);
+
 			if (option == 0){
 				customer.printReceipt();
 				return;	
