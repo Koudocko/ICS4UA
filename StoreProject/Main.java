@@ -8,10 +8,9 @@ public class Main{
 
 		int choice = -1;
 		while (choice < 0 || choice > stores.size()){
-			System.out.println();
 			System.out.println("---==={ Available Shops in DistroMall }===---");
 
-			System.out.println("0 - Checkout");
+			System.out.println("0 - Exit mall");
 			System.out.println("--------------------");
 			for (int i = 0; i < stores.size(); ++i){
 				System.out.println((i + 1) + " - " + stores.get(i).name);
@@ -81,7 +80,7 @@ public class Main{
 		utilities.addItem("Wood plank", 24.14);
 		utilities.addItem("Paint", 33.97);
 		utilities.addItem("Lightbulb", 3.30);
-		utilities.addItem("Drills", 99.00);
+		utilities.addItem("Drill", 99.00);
 		utilities.addItem("Hammer", 19.98);
 		stores.add(utilities);
 		
@@ -104,7 +103,7 @@ public class Main{
 		ArrayList<Store> stores = new ArrayList<Store>();
 		initStores(stores);
 
-		String logo =               
+		String welcomeMessage =               
 					"        a8888b.\n"
 			.concat("       d888888b.\n")
 			.concat("       8P\"YP\"Y88\n")
@@ -122,7 +121,25 @@ public class Main{
 			.concat("/     \\._____.d|    .'   /_______  /__/____  > |__|  |__|   \\____/  \\____|__  (____  /____/____/\n")
 			.concat("`--..__)888888P`._.'             \\/        \\/                               \\/     \\/\n");
 
-		System.out.println(logo);
+		String goodbyeMessage =               
+					"        a8888b.\n"
+			.concat("       d888888b.\n")
+			.concat("       8P\"YP\"Y88\n")
+			.concat("       8|o||o|88\n")
+			.concat("       8'    .88            ___________.__                   __               _____\n")
+			.concat("       8`._.' Y8.           \\__    ___/|  |__ _____    ____ |  | __  ______ _/ ____\\___________\n")
+			.concat("      d/      `8b.            |    |   |  |  \\\\__  \\  /    \\|  |/ / /  ___/ \\   __\\/  _ \\_  __ \\\n")
+			.concat("    .dP   .     Y8b.          |    |   |   Y  \\/ __ \\|   |  \\    <  \\___ \\   |  | (  <_> )  | \\/\n")
+			.concat("   d8:'   \"   `::88b.         |____|   |___|  (____  /___|  /__|_ \\/____  >  |__|  \\____/|__|\n")
+			.concat("  d8\"           `Y88b                       \\/     \\/     \\/     \\/     \\/\n")
+			.concat(" :8P     '       :888        _________.__                         .__\n")
+			.concat("  8a.    :      _a88P       /   _____/|  |__   ____ ______ ______ |__| ____    ____\n")
+			.concat("._/\"Yaa_ :    .| 88P|       \\_____  \\ |  |  \\ /  _ \\\\____ \\\\____ \\|  |/    \\  / ___\\\n")
+			.concat("\\    YP\"      `| 8P  `.     /        \\|   Y  (  <_> )  |_> >  |_> >  |   |  \\/ /_/  >\n")
+			.concat("/     \\._____.d|    .'     /_______  /|___|  /\\____/|   __/|   __/|__|___|  /\\___  /\n")
+			.concat("`--..__)888888P`._.'               \\/      \\/       |__|   |__|           \\//_____/\n");
+
+		System.out.println(welcomeMessage);
 
 		Scanner stdinHandle = new Scanner(System.in);
 		System.out.print("Hello new customer, please enter your name: ");
@@ -130,12 +147,19 @@ public class Main{
 		System.out.println();
 
 		Customer customer = new Customer(customerName);
-		System.out.println("---==={ Welcome to DistroMall, " + customer.name + " }===---");
+		System.out.println("Welcome to DistroMall, " + customer.name + "!");
+		System.out.println();
+
+		try{ Thread.sleep(1500); }
+		catch (InterruptedException e){
+			Thread.currentThread().interrupt();
+		}
 		
 		while (true){
 			int option = selectStore(stores);
 
 			if (option == 0){
+				System.out.println(goodbyeMessage);
 				return;	
 			}
 			else{

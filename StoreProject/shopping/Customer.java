@@ -31,10 +31,9 @@ public class Customer{
 	public void storeMenu(Store store){
 		Scanner stdinHandle = new Scanner(System.in);
 
-		int choice = -1;
-		while (choice != 0){
+		int choice = -1, result = 1;
+		while (result == 1 || choice < 0 || choice > 2){
 			printDetails();
-			System.out.println();
 			System.out.println("---==={ Actions at " + store.name + " }===---");
 
 			System.out.println("0 - Checkout");
@@ -56,7 +55,7 @@ public class Customer{
 
 			switch (choice){
 				case 0:
-					printReceipt(store);
+					result = printReceipt(store);
 					break;
 				case 1:
 					buyItem(store);
@@ -124,6 +123,13 @@ public class Customer{
 		else{
 			System.out.println("Nothing in shopping cart to sell!");
 		}
+
+		try{ Thread.sleep(1500); }
+		catch (InterruptedException e){
+			Thread.currentThread().interrupt();
+		}
+
+		System.out.println();
 	}
 
 	public void buyItem(Store store){
@@ -196,6 +202,7 @@ public class Customer{
 	}
 
 	public void printDetails(){
+		System.out.println("---==={ " + this.name + "'s Details }===---");
 		System.out.println("Balance: " + NumberFormat.getCurrencyInstance().format(this.balance));
 
 		System.out.println("Coupons available: " + this.coupons.size());
@@ -221,11 +228,13 @@ public class Customer{
 			}
 			
 			System.out.println("Cart Total: " + NumberFormat.getCurrencyInstance().format(cartTotal));
-			System.out.println("Predicated Balance: " + NumberFormat.getCurrencyInstance().format((this.balance - cartTotal)));
+			String sign = this.balance - cartTotal >= 0 ? "" : "-";
+			System.out.println("Predicted Balance: " + sign + NumberFormat.getCurrencyInstance().format((this.balance - cartTotal)));
 		}
 		else{
 			System.out.println("Cart: empty");
 		}
+		System.out.println();
 
 		try{ Thread.sleep(1500); }
 		catch (InterruptedException e){
@@ -233,26 +242,12 @@ public class Customer{
 		}
 	}
 
-	// void fmtText(String center, int width){
-	// 	double offset = (width - center.length()) / 2.0 - 1;
-	// 	System.out.print("|");
-	// 	for (int i = 0; i < Math.ceil(offset); ++i)
-	// 		System.out.print(" ");
-	// 	System.out.print(center);
-	// 	for (int i = 0; i < Math.floor(offset); ++i)
-	// 		System.out.print(" ");
-	// 	System.out.println("|");
-	// }
-
-	// void fmtText(String left, String right, int width){
-	// 	int offset = width - right.length() - left.length() - 2;
-	// 	System.out.print("|");
-	// 	System.out.print(left);
-	// 	for (int i = 0; i < offset; ++i)
-	// 		System.out.print(" ");
-	// 	System.out.print(right);
-	// 	System.out.println("|");
-	// }
+	void receiptDelay(){
+		try{ Thread.sleep(250); }
+		catch (InterruptedException e){
+			Thread.currentThread().interrupt();
+		}
+	}
 
 	void fmtText(String left, String middle, String right, int width){
 		int leftOffset = (int)Math.ceil((width - middle.length()) / 2.0 - left.length() - 1);
@@ -269,55 +264,140 @@ public class Customer{
 			System.out.print(" ");
 
 		System.out.println(right + "|");
+		receiptDelay();
 	}
 
-	public void printReceipt(Store store){
-		int width = 50;
-		LocalDateTime currentTime = LocalDateTime.now();
+	public int printReceipt(Store store){
+		if (!this.cart.isEmpty()){
+			int choice = -1, width = 50;
 
-		System.out.println("--------------------------------------------------");
-		fmtText("", "", "", width);
+			LocalDateTime currentTime = LocalDateTime.now();
+			Scanner stdinHandle = new Scanner(System.in);
 
-		fmtText("", store.name, "", width);
-		fmtText("", store.address, "", width);
-		fmtText("", store.phoneNumber, "", width);
-		fmtText("", store.postalCode, "", width);
+			if (!coupons.isEmpty()){
+				while (choice < 1 || choice > this.coupons.size()){
+					printDetails();
+					System.out.print("Which coupon would you like to use: ");
 
-		fmtText("", "", "", width);
-		fmtText("", "************************************************", "", width);
-		fmtText("", "", "", width);
-		fmtText(
-			DateTimeFormatter.ofPattern("yyyy/MM/dd").format(currentTime), 
-			"",
-			DateTimeFormatter.ofPattern("hh:mm a").format(currentTime),
-			width
-		);
-		fmtText("", "", "", width);
-		fmtText("", "************************************************", "", width);
-		fmtText("", "", "", width);
+					if (stdinHandle.hasNextInt()){
+						choice = stdinHandle.nextInt();
+					}
+					else{
+						stdinHandle.nextLine();
+					}
 
-		double subTotal = 0, totalTax = 0, coupon = 0, total = 0;
-		for (Item item : this.cart){
-			fmtText(item.name, Integer.toString(item.stock), NumberFormat.getCurrencyInstance().format(item.price), width);
-			subTotal += item.price;
+					System.out.println();
+				}
+			}
+			
+			double subTotal = 0, totalTax = 0, coupon = 0, total = 0;
+			for (Item item : this.cart)
+				subTotal += item.price * item.stock;
+			totalTax = subTotal * 0.13;
+			if (choice > 0)
+				coupon = (subTotal + totalTax) * this.coupons.get(choice - 1) / 100;
+			total = (subTotal + totalTax - coupon);
+
+			if (total <= this.balance){
+				System.out.println("--------------------------------------------------");
+				receiptDelay();
+				fmtText("", "", "", width);
+
+				fmtText("", store.name, "", width);
+				fmtText("", store.address, "", width);
+				fmtText("", store.phoneNumber, "", width);
+				fmtText("", store.postalCode, "", width);
+
+				fmtText("", "", "", width);
+				fmtText("", "************************************************", "", width);
+				fmtText("", "", "", width);
+				fmtText(
+					DateTimeFormatter.ofPattern("yyyy/MM/dd").format(currentTime), 
+					"",
+					DateTimeFormatter.ofPattern("hh:mm a").format(currentTime),
+					width
+				);
+				fmtText("", "", "", width);
+				fmtText("", "************************************************", "", width);
+				fmtText("", "", "", width);
+
+				fmtText("Name", "Quantity", "Price", width);
+				for (Item item : this.cart)
+					fmtText(item.name, Integer.toString(item.stock), NumberFormat.getCurrencyInstance().format(item.price), width);
+
+				fmtText("", "", "", width);
+				fmtText("", "************************************************", "", width);
+				fmtText("", "", "", width);
+
+				fmtText("SUBTOTAL:", "", NumberFormat.getCurrencyInstance().format(subTotal), width);
+				fmtText("TOTAL TAX (13%):", "", NumberFormat.getCurrencyInstance().format(totalTax), width);
+				if (choice > 0){
+					fmtText("COUPON (-" + this.coupons.get(choice - 1) + "%):", "", "-" + NumberFormat.getCurrencyInstance().format(coupon), width);
+					this.coupons.remove(choice - 1);
+				}
+				fmtText("TOTAL:", "", NumberFormat.getCurrencyInstance().format(total), width);
+				fmtText("", "", "", width);
+
+
+				String logo =               
+							"   a8888b.\n"
+					.concat("   d888888b.\n")
+					.concat("   8P\"YP\"Y88\n")
+					.concat("   8|o||o|88\n")
+					.concat("   8'    .88\n")
+					.concat("    8`._.' Y8.\n")
+					.concat("    d/      `8b.\n")
+					.concat("    .dP   .     Y8b.\n")
+					.concat("   d8:'   \"   `::88b.\n")
+					.concat("  d8\"           `Y88b\n")
+					.concat(" :8P     '       :888\n")
+					.concat("  8a.    :      _a88P\n")
+					.concat("._/\"Yaa_ :    .| 88P|\n")
+					.concat("  \\    YP\"      `| 8P  `.\n")
+					.concat(" /     \\._____.d|    .'\n")
+					.concat("`--..__)888888P`._.'\n");
+				for (String line : logo.split("\n"))
+					fmtText("", line, "", width);
+
+				fmtText("", "", "", width);
+				fmtText("", "Thanks for shopping at " + store.name, "", width);
+
+				fmtText("", "", "", width);
+				System.out.println("--------------------------------------------------");
+				System.out.println();
+
+				this.balance -= total;
+				this.cart.clear();
+
+				try{ Thread.sleep(1500); }
+				catch (InterruptedException e){
+					Thread.currentThread().interrupt();
+				}
+
+				return 0;
+			}
+			else{
+				System.out.println("Card declined! Insufficient balance...");
+				System.out.println();
+
+				try{ Thread.sleep(1500); }
+				catch (InterruptedException e){
+					Thread.currentThread().interrupt();
+				}
+
+				return 1;
+			}
 		}
+		else{
+			System.out.println("No items in cart to checkout!");
+			System.out.println();
 
-		fmtText("", "", "", width);
-		fmtText("", "************************************************", "", width);
-		fmtText("", "", "", width);
+			try{ Thread.sleep(1500); }
+			catch (InterruptedException e){
+				Thread.currentThread().interrupt();
+			}
 
-		fmtText("SUBTOTAL:", "", NumberFormat.getCurrencyInstance().format(subTotal), width);
-		totalTax = subTotal * 0.13;
-		fmtText("TOTAL TAX (13%):", "", NumberFormat.getCurrencyInstance().format(totalTax), width);
-		coupon = (subTotal + totalTax) * this.coupons.get(0) / 100;
-		fmtText("COUPON (-" + this.coupons.get(0) + "%):", "", "-" + NumberFormat.getCurrencyInstance().format(coupon), width);
-		total = (subTotal + totalTax - coupon);
-		fmtText("TOTAL:", "", NumberFormat.getCurrencyInstance().format(total), width);
-
-		fmtText("", "", "", width);
-		System.out.println("--------------------------------------------------");
-
-		this.balance -= total;
-		this.cart.clear();
+			return 0;
+		}
 	}
 }
