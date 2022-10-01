@@ -133,15 +133,13 @@ public class Main{
 		System.out.println("---==={ Welcome to DistroMall, " + customer.name + " }===---");
 		
 		while (true){
-			customer.printDetails();
 			int option = selectStore(stores);
 
 			if (option == 0){
-				customer.printReceipt();
 				return;	
 			}
 			else{
-				customer.buyAt(stores.get(option - 1));
+				customer.storeMenu(stores.get(option - 1));
 			}
 		}
 	}

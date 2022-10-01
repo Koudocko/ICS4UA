@@ -8,7 +8,7 @@ public class Store{
 	public ArrayList<Item> inventory;
 	public String name, address, phoneNumber, postalCode;
 
-	public Store(String name, String address, String phoneNumber, String postalCode){
+	public Store(String name, String address, String postalCode, String phoneNumber){
 		this.name = name;
 		this.address = address;
 		this.phoneNumber = phoneNumber;
