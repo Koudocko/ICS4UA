@@ -2,7 +2,21 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import shopping.*;
 
+// Project: Store Project
+// Author: Tyler Wehrle 
+
+// Upgrades:
+// Added multiple stores under one mall heading, rather than just one store
+// Added the option to return items from your shopping cart
+// Program is functional with multiple customers due to the object-oriented-nature
+// Trivial to add more items to stores and more stores to the mall
+// Added the ability to use coupons at checkout
+
+// Debugging:
+// Trial and error trying to allign the ASCII art completely
+
 public class Main{
+	// Interface for the customer to select a store to shop at
 	public static int selectStore(ArrayList<Store> stores){
 		Scanner stdinHandle = new Scanner(System.in);
 
@@ -28,10 +42,13 @@ public class Main{
 			System.out.println();
 		}
 
+		//Return the choice the user selected
 		return choice;
 	}
 
+	// Initializes the stores array with predefined data
 	public static void initStores(ArrayList<Store> stores){
+		// Store 1
 		Store games = new Store(
 			"Gentoo Games", 
 			"25 The West Mall #40, Etobicoke, ON", 
@@ -45,6 +62,7 @@ public class Main{
 		games.addItem("Extension cable", 10.17);
 		stores.add(games);
 
+		// Store 2
 		Store food = new Store(
 			"Debian Diner", 
 			"25 The West Mall, #700 Etobicoke, ON", 
@@ -58,6 +76,7 @@ public class Main{
 		food.addItem("Cake", 13.99);
 		stores.add(food);
 
+		// Store 3
 		Store fishing = new Store(
 			"Fedora Fishing", 
 			"25 The West Mall #1660, Etobicoke, ON", 
@@ -71,6 +90,7 @@ public class Main{
 		fishing.addItem("Bobber", 1.20);
 		stores.add(fishing);
 
+		// Store 4
 		Store utilities = new Store(
 			"Ubuntu Utilities", 
 			"25 The West Mall #1900, Etobicoke, ON", 
@@ -84,6 +104,7 @@ public class Main{
 		utilities.addItem("Hammer", 19.98);
 		stores.add(utilities);
 		
+		// Store 5
 		Store appliances = new Store(
 			"Arch Appliances", 
 			"25 The West Mall #3038, Etobicoke, ON", 
@@ -100,9 +121,11 @@ public class Main{
 	}
 
 	public static void main(String args[]){
+		// List of stores the mall has to offer
 		ArrayList<Store> stores = new ArrayList<Store>();
-		initStores(stores);
+		initStores(stores); // Populate empty array of stores
 
+		// Welcome message to be displayed on program start
 		String welcomeMessage =               
 					"        a8888b.\n"
 			.concat("       d888888b.\n")
@@ -121,6 +144,7 @@ public class Main{
 			.concat("/     \\._____.d|    .'   /_______  /__/____  > |__|  |__|   \\____/  \\____|__  (____  /____/____/\n")
 			.concat("`--..__)888888P`._.'             \\/        \\/                               \\/     \\/\n");
 
+		// Goodbye message to be displayed on program exit
 		String goodbyeMessage =               
 					"        a8888b.\n"
 			.concat("       d888888b.\n")
@@ -141,6 +165,7 @@ public class Main{
 
 		System.out.println(welcomeMessage);
 
+		// Obtain a name for the customer through standard input stream
 		Scanner stdinHandle = new Scanner(System.in);
 		System.out.print("Hello new customer, please enter your name: ");
 		String customerName = stdinHandle.nextLine();
@@ -150,14 +175,16 @@ public class Main{
 		System.out.println("Welcome to DistroMall, " + customer.name + "!");
 		System.out.println();
 
+		// Pause for the user to process
 		try{ Thread.sleep(1500); }
 		catch (InterruptedException e){
 			Thread.currentThread().interrupt();
 		}
 		
 		while (true){
-			int option = selectStore(stores);
+			int option = selectStore(stores); // Get the store the user wants to shop at
 
+			// 0 is exit program, anything else is shop at the corresponding store
 			if (option == 0){
 				System.out.println(goodbyeMessage);
 				return;	

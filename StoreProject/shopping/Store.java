@@ -1,13 +1,13 @@
 package shopping;
 
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Store{
-	public ArrayList<Item> inventory;
-	public String name, address, phoneNumber, postalCode;
+	public ArrayList<Item> inventory; // List of items sold at the store
+	public String name, address, phoneNumber, postalCode; // Basic information
 
+	// Simple store constructor to initialize class
 	public Store(String name, String address, String postalCode, String phoneNumber){
 		this.name = name;
 		this.address = address;
@@ -16,6 +16,7 @@ public class Store{
 		this.inventory = new ArrayList<Item>();
 	}
 
+	// Method to display all the products sold at the store
 	public void displayInventory(){
 		System.out.println("--------------------------------------------------");
 
@@ -30,10 +31,9 @@ public class Store{
 		System.out.println("--------------------------------------------------");
 	}
 
+	// Method to add items to the store
 	public void addItem(String name, double price){
 		Random rand = new Random();
-		int salePercent = rand.nextBoolean() ? rand.nextInt(100) + 1 : 0;
-
-		inventory.add(new Item(name, this.name, rand.nextInt(50) + 1, price, salePercent));
+		inventory.add(new Item(name, rand.nextInt(50) + 1, price)); // Add random stock to item between 1-50
 	}
 }
