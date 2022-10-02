@@ -5,6 +5,11 @@ import shopping.*;
 // Project: Store Project
 // Author: Tyler Wehrle 
 
+// Work Cited:
+// Get date/time - https://www.javatpoint.com/java-get-current-date 
+// Pause thread of execution - https://www.geeksforgeeks.org/how-to-temporarily-suspend-a-thread-in-java/
+// Format double as currency - https://stackabuse.com/how-to-format-number-as-currency-string-in-java/
+
 // Upgrades:
 // Added multiple stores under one mall heading, rather than just one store
 // Added the option to return items from your shopping cart
