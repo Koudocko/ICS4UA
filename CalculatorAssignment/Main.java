@@ -134,7 +134,7 @@ public class Main{
 					}
 					else{
 						currTerm = new Term(
-							prevTerm.right,
+							prevTerm.left,
 							new DoubleWrapper(Double.parseDouble(right)),
 							operator
 						);
