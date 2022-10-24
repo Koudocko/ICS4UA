@@ -1,8 +1,12 @@
+// CalculatorAssignment
+// @author Tyler Wehrle Period 4
+
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+// C pointer emulation, used for bedmas
 class DoubleWrapper{
 	double value;
 
@@ -11,6 +15,7 @@ class DoubleWrapper{
 	}
 }
 
+// Token to split up an expression into two operands and an operator
 class Term{
 	DoubleWrapper left, right;
 	String operator;
@@ -27,11 +32,11 @@ class Term{
 }
 
 public class Main{
-	public static String safeIntegerParse(String expression){
+	// extracs the first number from a string 
+	public static String readNum(String expression){
 		int idx = 0; 
-		if (expression.charAt(0) == '-')
-			++idx;
 
+		// reads until either a non-number or invalid decimal notation
 		boolean decimal = false;
 		for (; idx < expression.length(); ++idx){
 			char symbol = expression.charAt(idx);
@@ -50,11 +55,14 @@ public class Main{
 		return expression.substring(0, idx);
 	}
 
+	// Returns the string expression evaluated as a double
 	public static double evaluateExpression(String expression) throws Exception{
+		// Stores all the expression tokens (Term)
 		ArrayList<ArrayList<Term>> terms = new ArrayList<ArrayList<Term>>();
 		for (int i = 0; i < 4; ++i)
 			terms.add(new ArrayList<Term>());
 
+		// Contains valid symbols/operations and their presedence
 		HashMap<String, Integer> presedence = new HashMap<String, Integer>();
 		presedence.put("sin", 3);
 		presedence.put("cos", 3);
@@ -66,16 +74,20 @@ public class Main{
 		presedence.put("*", 1);
 		presedence.put("+", 0);
 		presedence.put("-", 0);
-		presedence.put(" ", -1);
+		presedence.put(" ", -1); // First token edge case
 
+		// List of edge case unary operators
 		ArrayList<String> unaryOperators = new ArrayList<String>(
 				Arrays.asList("sqrt", "sin", "cos", "tan"));
 
 		Term prevTerm = new Term();
 		
 		int iter = 0, idx = 0, endLength = 0;
+		// Strip expression of all whitespace
+		expression = "0" + expression;
 		expression = expression.replaceAll("\\s", "");
 		
+		// Refactor expression to sub in second operand for unary operators
 		for (int i = 0; i < unaryOperators.size(); ++i){
 			String[] splits = expression.split(unaryOperators.get(i));
 			expression = "";
@@ -87,10 +99,13 @@ public class Main{
 			}
 		}
 
+		// Parses and tokenizes raw string expression
 		while (idx + endLength < expression.length()){
-			String left = safeIntegerParse(expression.substring(idx));
+			// Left operand
+			String left = readNum(expression.substring(idx));
 			idx += left.length();
 			
+			// Operator
 			String operator = "";
 			String[] split = expression.substring(idx).split("[0-9]");
 			if (split.length > 0){
@@ -98,10 +113,12 @@ public class Main{
 				idx += split[0].length();
 			}
 
-			String right = safeIntegerParse(expression.substring(idx));
+			// Right operand
+			String right = readNum(expression.substring(idx));
 			endLength = right.length();
 
 			Term currTerm = new Term();
+			// Tokenize according to operator presedence
 			switch (operator){
 				case "sqrt": case "sin": case "cos": case "tan": 
 				case "^": case "*": case "/": case "%": case "+": case "-": 
@@ -133,11 +150,14 @@ public class Main{
 			++iter;
 		}
 
+		// Evaluate all collected tokens in order of presedence
 		double result = 0.0;
 		for (int i = terms.size() - 1; i >= 0; --i){
 			for (int j = 0; j < terms.get(i).size(); ++j){
-				double left = terms.get(i).get(j).left.value, right = terms.get(i).get(j).right.value;
+				double left = terms.get(i).get(j).left.value, 
+							 right = terms.get(i).get(j).right.value;
 
+				// Run appropriate calculations for each token
 				switch (terms.get(i).get(j).operator){
 					case "sin":
 						result = Math.sin(right);
@@ -179,13 +199,12 @@ public class Main{
 		return result;
 	}
 
+	// Handle standard input and pass to evaluater
 	public static void main(String args[]){
-		System.out.print(0);
 		String expression = "";
 		Scanner stdinHandle = new Scanner(System.in);
 	
 		expression = stdinHandle.nextLine();
-		expression = "0" + expression;
 		try{
 			System.out.println(evaluateExpression(expression));
 		}
