@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 class DoubleWrapper{
@@ -12,13 +13,13 @@ class DoubleWrapper{
 
 class Term{
 	DoubleWrapper left, right;
-	char operator;
+	String operator;
 
 	public Term(){
-		this(new DoubleWrapper(0.0), new DoubleWrapper(0.0), ' ');
+		this(new DoubleWrapper(0.0), new DoubleWrapper(0.0), " ");
 	}
 
-	public Term(DoubleWrapper left, DoubleWrapper right, char operator){
+	public Term(DoubleWrapper left, DoubleWrapper right, String operator){
 		this.left = left;
 		this.right = right;
 		this.operator = operator;
@@ -28,47 +29,82 @@ class Term{
 public class Main{
 	public static String safeIntegerParse(String expression){
 		int idx = 0; 
+		if (expression.charAt(0) == '-')
+			++idx;
 
+		boolean decimal = false;
 		for (; idx < expression.length(); ++idx){
 			char symbol = expression.charAt(idx);
-			if ('0' > symbol || symbol > '9')
-				break;	
+
+			if (symbol == '.' && !decimal){
+				decimal = true;
+				continue;
+			}
+			else if ('0' <= symbol && symbol <= '9'){
+				continue;
+			}
+
+			break;	
 		}
 
 		return expression.substring(0, idx);
 	}
 
 	public static double evaluateExpression(String expression) throws Exception{
-		ArrayList<ArrayList<Term>> terms = new ArrayList<ArrayList<Term>>(3);
-		terms.add(new ArrayList<Term>());
-		terms.add(new ArrayList<Term>());
-		terms.add(new ArrayList<Term>());
+		ArrayList<ArrayList<Term>> terms = new ArrayList<ArrayList<Term>>();
+		for (int i = 0; i < 4; ++i)
+			terms.add(new ArrayList<Term>());
 
-		HashMap<Character, Integer> presedence = new HashMap<Character, Integer>();
-		presedence.put('^', 2);
-		presedence.put('*', 1);
-		presedence.put('/', 1);
-		presedence.put('%', 1);
-		presedence.put('+', 0);
-		presedence.put('-', 0);
-		presedence.put(' ', -1);
+		HashMap<String, Integer> presedence = new HashMap<String, Integer>();
+		presedence.put("sin", 3);
+		presedence.put("cos", 3);
+		presedence.put("tan", 3);
+		presedence.put("sqrt", 3);
+		presedence.put("^", 2);
+		presedence.put("/", 1);
+		presedence.put("%", 1);
+		presedence.put("*", 1);
+		presedence.put("+", 0);
+		presedence.put("-", 0);
+		presedence.put(" ", -1);
+
+		ArrayList<String> unaryOperators = new ArrayList<String>(
+				Arrays.asList("sqrt", "sin", "cos", "tan"));
 
 		Term prevTerm = new Term();
 		
-		int iter = 0, idx = 0;
+		int iter = 0, idx = 0, endLength = 0;
 		expression = expression.replaceAll("\\s", "");
-		while (idx < expression.length()-1){
+		
+		for (int i = 0; i < unaryOperators.size(); ++i){
+			String[] splits = expression.split(unaryOperators.get(i));
+			expression = "";
+			for (int j = 0; j < splits.length; ++j){
+				if (j < splits.length - 1)
+					expression += splits[j] + "0" + unaryOperators.get(i);
+				else
+					expression += splits[j];
+			}
+		}
+
+		while (idx + endLength < expression.length()){
 			String left = safeIntegerParse(expression.substring(idx));
 			idx += left.length();
 			
-			char operator = expression.charAt(idx);
-			idx += 1;
+			String operator = "";
+			String[] split = expression.substring(idx).split("[0-9]");
+			if (split.length > 0){
+				operator = split[0];
+				idx += split[0].length();
+			}
 
 			String right = safeIntegerParse(expression.substring(idx));
+			endLength = right.length();
 
 			Term currTerm = new Term();
 			switch (operator){
-				case '^': case '*': case '/': case '%': case '+': case '-': 
+				case "sqrt": case "sin": case "cos": case "tan": 
+				case "^": case "*": case "/": case "%": case "+": case "-": 
 					if (presedence.get(operator) > presedence.get(prevTerm.operator)){
 						currTerm = new Term(
 							new DoubleWrapper(Double.parseDouble(left)), 
@@ -90,7 +126,7 @@ public class Main{
 					terms.get(presedence.get(operator)).add(currTerm);
 				break;
 				default:
-					throw new Exception("Invalid symbol!");
+					throw new Exception("Error Parsing Expression!");
 			}
 
 			prevTerm = currTerm; 
@@ -103,23 +139,35 @@ public class Main{
 				double left = terms.get(i).get(j).left.value, right = terms.get(i).get(j).right.value;
 
 				switch (terms.get(i).get(j).operator){
-					case '^':
+					case "sin":
+						result = Math.sin(right);
+						break;
+					case "cos":
+						result = Math.cos(right);
+						break;
+					case "tan":
+						result = Math.tan(right);
+						break;
+					case "sqrt":
+						result = Math.sqrt(right);
+						break;
+					case "^":
 						result = Math.pow(left, right);
 						break;
-					case '*':
+					case "*":
 						result = left * right;
 						break;
-					case '/':
+					case "%":
+						result = left % right;	
+						break;
+					case "/":
 						result = left / right;	
 						break;
-					case '%':
-						result = left % right;
-						break;
-					case '+':
+					case "+":
 						result = left + right;
 						break;
-					case '-':
-						result = left = right;
+					case "-":
+						result = left - right;
 						break;
 				}
 
@@ -132,15 +180,19 @@ public class Main{
 	}
 
 	public static void main(String args[]){
+		System.out.print(0);
 		String expression = "";
 		Scanner stdinHandle = new Scanner(System.in);
 	
 		expression = stdinHandle.nextLine();
+		expression = "0" + expression;
 		try{
 			System.out.println(evaluateExpression(expression));
 		}
 		catch (Exception e){
-			e.printStackTrace();
+			System.err.println("Error Parsing Expression!");
 		}
+
+		stdinHandle.close();
 	}
 }
