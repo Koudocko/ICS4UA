@@ -57,7 +57,7 @@ public class Calculator{
 		idx += operator.length();
 
 		// Extract subexpression right operand
-		if (expression.substring(idx).charAt(0) == '-'){
+		if (expression.charAt(idx) == '-'){
 			if (expression.substring(idx + 1).indexOf("sqrt") == 0){
 				right = "-1";
 			}
