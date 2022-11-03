@@ -29,23 +29,50 @@ public class Calculator{
 		String left, operator, right;
 
 		// Extract subexpression left operand
-		if (expression.indexOf("sqrt") == 0)
-			left = "0";
-		else
-			{ left = expression.split("[^0-9.]")[0]; idx += left.length(); }
+		if (expression.charAt(0) == '-'){
+			if (expression.substring(idx + 1).indexOf("sqrt") == 0){
+				left = "-1";
+				++idx;
+			}
+			else{
+				left = "-".concat(expression.substring(1).split("[^0-9.]")[0]); 
+				idx += left.length(); 
+			}
+		}
+		else{
+			if (expression.indexOf("sqrt") == 0){
+				left = "1";
+			}
+			else{
+				left = expression.split("[^0-9.]")[0]; 
+				idx += left.length(); 	
+			}
+		}
 
 		// Extract subexpression operator
 		if (expression.substring(idx).indexOf("sqrt") == 0)
 			operator = expression.substring(idx).split("[0-9]")[0];
 		else
-			operator = expression.substring(idx).split("[0-9]|sqrt")[0];
+			operator = expression.substring(idx).split("[0-9]|sqrt")[0].substring(0, 1);
 		idx += operator.length();
 
 		// Extract subexpression right operand
-		if (expression.substring(idx).indexOf("sqrt") == 0)
-			right = "0";
-		else
-			right = expression.substring(idx).split("[^0-9.]")[0];
+		if (expression.substring(idx).charAt(0) == '-'){
+			if (expression.substring(idx + 1).indexOf("sqrt") == 0){
+				right = "-1";
+			}
+			else{
+			  right = "-".concat(expression.substring(idx + 1).split("[^0-9.]")[0]); 
+			}
+		}
+		else{
+			if (expression.substring(idx).indexOf("sqrt") == 0){
+				right = "1";
+			}
+			else{
+				right = expression.substring(idx).split("[^0-9.]")[0];
+			}
+		}
 
 		// Construct new node from extraction
 		Node newNode = new Node(
@@ -65,7 +92,7 @@ public class Calculator{
 				while (!adjacentNode.left.operator.isEmpty() &&
 					presedence.get(adjacentNode.left.operator) >= 
 					presedence.get(newNode.operator))
-				 { adjacentNode = adjacentNode.left; }
+			  { adjacentNode = adjacentNode.left; }
 
 				newNode.right = adjacentNode.left;
 				adjacentNode.left = newNode;
@@ -81,7 +108,7 @@ public class Calculator{
 		if (head != null){
 			switch (head.operator){
 				case "sqrt":
-					return Math.sqrt(parseExpression(head.right));
+					return head.left.result * Math.sqrt(parseExpression(head.right));
 				case "^":
 					return Math.pow(parseExpression(head.left),parseExpression(head.right));
 				case "*":
