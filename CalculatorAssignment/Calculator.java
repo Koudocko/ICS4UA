@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.util.HashMap;
 
+// Node of a binary tree, stores the numeric value, operation, and pointers to left and right dependant expressions
 class Node{
 	double result;
 	String operator;
@@ -16,25 +17,34 @@ class Node{
 }
 
 public class Calculator{
+	// HashMap to store operator presedence, quick lookup
 	static HashMap<String, Integer> presedence = new HashMap<String, Integer>();
 
+	// Converts a string expression into connected nodes of a binary tree, returns the head node
 	public static Node tokenizeExpression(String expression) throws Exception{
 		int idx = 0;
 		String left, operator, right;
 
-		if (expression.substring(idx).indexOf("sqrt") == 0){
+		// Extract subexpression left operand
+		if (expression.indexOf("sqrt") == 0)
 			left = "0";
-		}
-		else{
-			left = expression.substring(idx).split("[^0-9.]")[0];
-			idx += left.length();
-		}
+		else
+			left = expression.split("[^0-9.]")[0]; idx += left.length();
 
-		operator = expression.substring(idx).split("[0-9]")[0];
+		// Extract subexpression operator
+		if (expression.substring(idx).indexOf("sqrt") == 0)
+			operator = expression.substring(idx).split("[0-9]")[0];
+		else
+			operator = expression.substring(idx).split("[0-9]|sqrt")[0];
 		idx += operator.length();
 
-		right = expression.substring(idx).split("[^0-9.]")[0];
+		// Extract subexpression right operand
+		if (expression.substring(idx).indexOf("sqrt") == 0)
+			right = "0";
+		else
+			right = expression.substring(idx).split("[^0-9.]")[0];
 
+		// Construct new node from extraction
 		Node newNode = new Node(
 			0.0, 
 			new Node(Double.parseDouble(left)),
@@ -42,6 +52,7 @@ public class Calculator{
 			operator
 		);
 
+		// Recursively assemble order of binary tree based on presedence, back-to-front of expression
 		if (expression.substring(idx).length() > right.length()){
 			Node headNode = tokenizeExpression(expression.substring(idx));
 			Node adjacentNode = headNode;
@@ -62,6 +73,7 @@ public class Calculator{
 		return newNode;
 	}
 
+	// Postfix evaluation of the binary tree, returning the result of the expression from the provided node
 	public static double parseExpression(Node head) throws Exception{
 		if (head != null){
 			switch (head.operator){
@@ -71,8 +83,6 @@ public class Calculator{
 					return Math.pow(parseExpression(head.left),parseExpression(head.right));
 				case "*":
 					return parseExpression(head.left) * parseExpression(head.right);
-				case "%":
-					return parseExpression(head.left) % parseExpression(head.right);
 				case "/":
 					return parseExpression(head.left) / parseExpression(head.right);
 				case "+":
@@ -90,13 +100,14 @@ public class Calculator{
 	}
 
 	public static void main(String args[]){
+		// Get input expression and strip whitespace
 		String expression = "";
 		Scanner stdinHandle = new Scanner(System.in);
 		expression = stdinHandle.nextLine().replaceAll("\\s", "");
 
+		// Initialize presedence hashmap
 		presedence.put("sqrt", 0); presedence.put("^", 1); presedence.put("/", 2); 
-		presedence.put("%", 2); presedence.put("*", 2); presedence.put("+", 3);
-		presedence.put("-", 3); 
+		presedence.put("*", 2); presedence.put("+", 3); presedence.put("-", 3); 
 
 		try{
 			System.out.println(parseExpression(tokenizeExpression(expression)));
