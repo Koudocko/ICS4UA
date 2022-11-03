@@ -1,3 +1,6 @@
+// Author: Tyler Wehrle
+// Assignment: Calculator
+
 import java.util.Scanner;
 import java.util.HashMap;
 
@@ -29,7 +32,7 @@ public class Calculator{
 		if (expression.indexOf("sqrt") == 0)
 			left = "0";
 		else
-			left = expression.split("[^0-9.]")[0]; idx += left.length();
+			{ left = expression.split("[^0-9.]")[0]; idx += left.length(); }
 
 		// Extract subexpression operator
 		if (expression.substring(idx).indexOf("sqrt") == 0)
