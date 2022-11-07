@@ -1,9 +1,13 @@
+// Author: Tyler Wehrle
+// Project: Array Problem Set
+// Credit: https://github.com/Koudocko/AP_CSP (sorting algorithm, my github)
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main{
-	// Credit: https://github.com/Koudocko/AP_CSP
+	// Sort array (primitive)
 	public static void insertionSort(int arr[], boolean ascending){
 		for (int i = 1; i < arr.length; ++i){
 			int j = i;
@@ -17,6 +21,7 @@ public class Main{
 		}
 	}
 
+	// Sort array (arraylist)
 	public static void insertionSort(ArrayList<Integer> arr, boolean ascending){
 		for (int i = 1; i < arr.size(); ++i){
 			int j = i;
@@ -30,6 +35,7 @@ public class Main{
 		}
 	}
 
+	// Display array (primitive)
 	public static void printArray(int arr[], int input){
 		if (input != 1)
 			insertionSort(arr, input == 2);
@@ -39,6 +45,7 @@ public class Main{
 		System.out.println();
 	}
 
+	// Display array (arraylist)
 	public static void printArray(ArrayList<Integer> arr, int input){
 		if (input != 1)
 			insertionSort(arr, input == 2);
@@ -55,7 +62,9 @@ public class Main{
 		);
 		Scanner stdinHandle = new Scanner(System.in);
 
+		// Runtime input loop
 		runtime: while (true){
+			// Menu display
 			System.out.println("-={ Menu }=-");
 			System.out.println("0 - Quit Program");
 			System.out.println("1 - Display Array Elements (Normal)");
