@@ -211,7 +211,7 @@ public class Main{
 
 			sort_numsay: while (true){
 				System.out.println("-={ Create Array > Sort Array }=-");
-				System.out.println("0 - Quit Program");
+				System.out.println("0 - Quit Sorting");
 				System.out.println("1 - Selection Sort");
 				System.out.println("2 - Bubble Sort");
 				System.out.println("3 - Insertion Sort");
@@ -250,7 +250,7 @@ public class Main{
 
 					System.out.println("Array After:");
 					printArray(temp);
-					System.out.println("Time to sort: " + (end - start) + " nanoseconds\n");
+					System.out.println("Time to Sort: " + (end - start) + " nanoseconds\n");
 				}
 				catch (Exception e){
 					System.out.println("___Invalid_Selection___\n");
